@@ -30,6 +30,10 @@ export type Message = (
     }
   | {
       type: MessageType.Generic;
+      photos?: {
+        uri: string;
+        creation_timestamp: number;
+      }[];
     }
 ) & {
   sender_name: string;

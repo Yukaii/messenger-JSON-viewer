@@ -13,6 +13,8 @@ import {
   useGroupedMessages,
 } from '@/lib/utils/message';
 
+import Message from '@/components/Message';
+
 function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
   return (
     <div className='flex h-full flex-col items-center justify-center'>
@@ -189,32 +191,15 @@ export default function HomePage() {
                       const isFirst = i === 0;
                       const isLast = i === messages.length - 1;
 
-                      const content = decodeString(message.content || '');
-
-                      return content ? (
-                        <div
+                      return (
+                        <Message
+                          message={message}
                           key={`message_${message.sender_name}_${groupIdx}_${i}`}
-                          className={cx('flex', {
-                            'justify-end': isMe,
-                          })}
-                        >
-                          <div
-                            className={cx(
-                              'whitespace-pre-wrap rounded-2xl px-4 py-2',
-                              {
-                                'rounded-r-md bg-blue-400 text-white': isMe,
-                                'rounded-l-md bg-gray-200': !isMe,
-                                'rounded-tl-2xl': isFirst && !isMe,
-                                'rounded-bl-2xl': isLast && !isMe,
-                                'rounded-tr-2xl': isFirst && isMe,
-                                'rounded-br-2xl': isLast && isMe,
-                              }
-                            )}
-                          >
-                            {content}
-                          </div>
-                        </div>
-                      ) : null;
+                          isFirst={isFirst}
+                          isLast={isLast}
+                          isMe={isMe}
+                        />
+                      );
                     })}
                   </div>
                 </div>
