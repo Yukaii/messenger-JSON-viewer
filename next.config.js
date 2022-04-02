@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /** @type {import('next').NextConfig} */
-module.exports = {
+const withPWA = require('next-pwa');
+
+/** @type {import('next').NextConfig} */
+module.exports = withPWA({
   eslint: {
     dirs: ['src'],
   },
@@ -24,4 +28,9 @@ module.exports = {
 
     return config;
   },
-};
+
+  // PWA
+  pwa: {
+    dest: 'public',
+  },
+});
