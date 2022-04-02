@@ -4,164 +4,14 @@ import randomColor from 'randomcolor';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-async function findInboxFolder(dir: FileSystemDirectoryHandle) {
-  const dirs: FileSystemDirectoryHandle[] = [];
-  for await (const entry of dir.values()) {
-    if (entry.kind === 'directory') {
-      dirs.push(entry);
-    }
-  }
-
-  const inbox = dirs.find((dir) => dir.name === 'inbox');
-  if (inbox) {
-    return inbox;
-  }
-}
-
-async function getSubDirs(dir: FileSystemDirectoryHandle) {
-  const entries: FileSystemDirectoryHandle[] = [];
-
-  for await (const entry of dir.values()) {
-    if (entry.kind === 'directory') {
-      entries.push(entry);
-    }
-  }
-
-  return entries;
-}
-
-const decoder = new TextDecoder('utf-8');
-
-function decodeString(str: string) {
-  return decoder.decode(
-    new Uint8Array(str.split('').map((s) => s.charCodeAt(0)))
-  );
-}
-
-async function readMessageJSON(dir: FileSystemDirectoryHandle) {
-  try {
-    const file = await dir.getFileHandle('message_1.json');
-
-    return (await file.getFile()).text();
-  } catch (e) {
-    return null;
-  }
-}
-
-async function readAutofillInformation(dir: FileSystemDirectoryHandle) {
-  try {
-    const file = await dir.getFileHandle('autofill_information.json');
-
-    return (await file.getFile()).text();
-  } catch (e) {
-    return null;
-  }
-}
-
-async function getMyselfName(
-  dir: FileSystemDirectoryHandle
-): Promise<string | null> {
-  const json = await readAutofillInformation(dir);
-  if (json) {
-    const autofill = JSON.parse(json);
-    return decodeString(
-      autofill['autofill_information_v2']?.['FULL_NAME']?.[0]
-    ) as string;
-  } else {
-    return null;
-  }
-}
-
-const chatCache = new Map<string, string>();
-
-type Chat = {
-  name: string;
-  dirName: string;
-  lastSent: number;
-  title: string;
-};
-
-async function loadChats(
-  inboxDir: FileSystemDirectoryHandle | null
-): Promise<Chat[]> {
-  if (!inboxDir) {
-    return [];
-  }
-
-  const subdirs = await getSubDirs(inboxDir);
-  return Promise.all(
-    subdirs.map(async (dir) => {
-      const messageJSON = await readMessageJSON(dir);
-      if (messageJSON) {
-        chatCache.set(dir.name, messageJSON);
-
-        const message = JSON.parse(messageJSON);
-        const name = decodeString(message.participants[0].name);
-
-        const lastSent = message.messages.slice(-1)[0].timestamp_ms as number;
-
-        return {
-          name,
-          dirName: dir.name,
-          lastSent,
-          title: decodeString(message.title),
-        } as Chat;
-      } else {
-        return null;
-      }
-    })
-  ).then((chats) => chats.filter(Boolean)) as Promise<Chat[]>;
-}
-
-enum MessageType {
-  Generic = 'Generic',
-  Unsubscribe = 'Unsubscribe',
-  Subscribe = 'Subscribe',
-  Call = 'Call',
-  Share = 'Share',
-}
-
-type Message = (
-  | {
-      type: MessageType.Unsubscribe | MessageType.Unsubscribe;
-      users: {
-        name: string;
-      }[];
-    }
-  | {
-      type: MessageType.Call;
-      call_duration: number;
-    }
-  | {
-      type: MessageType.Share;
-      share: {
-        link: string;
-      };
-    }
-  | {
-      type: MessageType.Generic;
-
-      // TODO:
-      // photos:
-    }
-) & {
-  sender_name: string;
-  timestamp_ms: number;
-  content: string;
-  is_unsent: boolean;
-};
-
-type MessageData = {
-  messages: Message[];
-  participants: {
-    name: string;
-  }[];
-  title: string;
-  is_still_participant: boolean;
-  // TODO:
-  thread_type: string;
-  thread_path: string;
-};
+import { findInboxFolder } from '@/lib/utils/file';
+import {
+  decodeString,
+  getMyselfName,
+  loadChats,
+  useCurrentMessage,
+  useGroupedMessages,
+} from '@/lib/utils/message';
 
 export default function HomePage() {
   const [directory, setDirectory] = useState<FileSystemDirectoryHandle | null>(
@@ -172,47 +22,8 @@ export default function HomePage() {
   );
 
   const [folderName, setFolderName] = useState<string | null>(null);
-
-  const currentMessage = useMemo<MessageData | null>(() => {
-    if (!folderName) {
-      return null;
-    }
-
-    if (chatCache.has(folderName)) {
-      return JSON.parse(chatCache.get(folderName) as string);
-    } else {
-      return null;
-    }
-  }, [folderName]);
-
-  const messagesGroupedByConsecutiveSender = useMemo<Message[][]>(() => {
-    if (!currentMessage) {
-      return [];
-    }
-
-    const messages = currentMessage.messages.sort(
-      (a, b) => a.timestamp_ms - b.timestamp_ms
-    );
-
-    const groupedMessages: Message[][] = [];
-
-    let currentGroup: Message[] = [];
-    let currentSender = messages[0].sender_name;
-
-    for (const message of messages) {
-      if (message.sender_name === currentSender) {
-        currentGroup.push(message);
-      } else {
-        groupedMessages.push(currentGroup);
-        currentGroup = [message];
-        currentSender = message.sender_name;
-      }
-    }
-
-    groupedMessages.push(currentGroup);
-
-    return groupedMessages;
-  }, [currentMessage]);
+  const currentMessage = useCurrentMessage(folderName);
+  const groupedMessages = useGroupedMessages(currentMessage);
 
   const { data } = useSWR('chats', () => loadChats(inboxDir));
   const { data: myName = null } = useSWR(
@@ -331,7 +142,7 @@ export default function HomePage() {
           </div>
 
           <div className='flex flex-1 flex-col gap-5 overflow-y-auto break-all px-4 py-4'>
-            {messagesGroupedByConsecutiveSender.map((messages, groupIdx) => {
+            {groupedMessages.map((messages, groupIdx) => {
               const sectionSenderName = decodeString(messages[0].sender_name);
               const color = randomColor({
                 seed: sectionSenderName,
