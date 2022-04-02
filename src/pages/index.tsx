@@ -1,4 +1,6 @@
 import { RefreshIcon, SearchIcon } from '@heroicons/react/outline';
+import cx from 'classnames';
+import randomColor from 'randomcolor';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -111,6 +113,56 @@ async function loadChats(
   ).then((chats) => chats.filter(Boolean)) as Promise<Chat[]>;
 }
 
+enum MessageType {
+  Generic = 'Generic',
+  Unsubscribe = 'Unsubscribe',
+  Subscribe = 'Subscribe',
+  Call = 'Call',
+  Share = 'Share',
+}
+
+type Message = (
+  | {
+      type: MessageType.Unsubscribe | MessageType.Unsubscribe;
+      users: {
+        name: string;
+      }[];
+    }
+  | {
+      type: MessageType.Call;
+      call_duration: number;
+    }
+  | {
+      type: MessageType.Share;
+      share: {
+        link: string;
+      };
+    }
+  | {
+      type: MessageType.Generic;
+
+      // TODO:
+      // photos:
+    }
+) & {
+  sender_name: string;
+  timestamp_ms: number;
+  content: string;
+  is_unsent: boolean;
+};
+
+type MessageData = {
+  messages: Message[];
+  participants: {
+    name: string;
+  }[];
+  title: string;
+  is_still_participant: boolean;
+  // TODO:
+  thread_type: string;
+  thread_path: string;
+};
+
 export default function HomePage() {
   const [directory, setDirectory] = useState<FileSystemDirectoryHandle | null>(
     null
@@ -118,6 +170,49 @@ export default function HomePage() {
   const [inboxDir, setInboxDir] = useState<FileSystemDirectoryHandle | null>(
     null
   );
+
+  const [folderName, setFolderName] = useState<string | null>(null);
+
+  const currentMessage = useMemo<MessageData | null>(() => {
+    if (!folderName) {
+      return null;
+    }
+
+    if (chatCache.has(folderName)) {
+      return JSON.parse(chatCache.get(folderName) as string);
+    } else {
+      return null;
+    }
+  }, [folderName]);
+
+  const messagesGroupedByConsecutiveSender = useMemo<Message[][]>(() => {
+    if (!currentMessage) {
+      return [];
+    }
+
+    const messages = currentMessage.messages.sort(
+      (a, b) => a.timestamp_ms - b.timestamp_ms
+    );
+
+    const groupedMessages: Message[][] = [];
+
+    let currentGroup: Message[] = [];
+    let currentSender = messages[0].sender_name;
+
+    for (const message of messages) {
+      if (message.sender_name === currentSender) {
+        currentGroup.push(message);
+      } else {
+        groupedMessages.push(currentGroup);
+        currentGroup = [message];
+        currentSender = message.sender_name;
+      }
+    }
+
+    groupedMessages.push(currentGroup);
+
+    return groupedMessages;
+  }, [currentMessage]);
 
   const { data } = useSWR('chats', () => loadChats(inboxDir));
   const { data: myName = null } = useSWR(
@@ -179,14 +274,14 @@ export default function HomePage() {
               </h3>
 
               <button className='rounded-full border-none p-2 hover:bg-gray-100'>
-                <RefreshIcon width={18} className='cursor-pointer' />
+                <RefreshIcon width={18} />
               </button>
             </div>
 
             <label className='relative w-full flex-1'>
               <input
                 placeholder='Search for user...'
-                className='w-full rounded-lg border-none bg-gray-100 py-2 px-4 pl-8 text-sm text-gray-500 outline-none ring-1 ring-gray-100 focus:ring-2 focus:ring-blue-500'
+                className='w-full rounded-lg border-none bg-gray-100 py-2 px-4 pl-8 text-sm text-gray-500 outline-none ring-1 ring-gray-100 focus:ring-2 focus:ring-blue-200'
               />
               <SearchIcon
                 className='absolute top-0 left-2.5 h-full stroke-gray-500'
@@ -199,11 +294,21 @@ export default function HomePage() {
           <div className='overflow-y-auto overflow-x-hidden'>
             {chats.map((chat) => (
               <div className='max-w-full px-1 py-1.5' key={chat.dirName}>
-                <div className='flex cursor-pointer flex-col rounded-lg py-3 px-5 hover:bg-gray-100'>
+                <div
+                  className={cx(
+                    'flex flex-col rounded-lg py-3 px-5 hover:bg-gray-100',
+                    {
+                      'bg-gray-100': folderName === chat.dirName,
+                    }
+                  )}
+                  onClick={() => {
+                    setFolderName(chat.dirName);
+                  }}
+                >
                   <span className='mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap'>
                     {chat.title}
                   </span>
-                  <small className='max-w-full overflow-hidden text-ellipsis'>
+                  <small className='max-w-full overflow-hidden text-ellipsis text-gray-400'>
                     {chat.dirName}
                   </small>
                 </div>
@@ -214,9 +319,84 @@ export default function HomePage() {
 
         {/* Message boxes */}
         <div className='flex flex-1 flex-col'>
-          <div className='flex h-14 w-full items-center'>Nav</div>
+          <div className='flex w-full items-center border-b py-4 px-4'>Nav</div>
 
-          <div className='flex-1 overflow-y-auto'></div>
+          <div className='flex flex-1 flex-col gap-5 overflow-y-auto break-all px-4 py-4'>
+            {messagesGroupedByConsecutiveSender.map((messages, groupIdx) => {
+              const groupSenderName = decodeString(messages[0].sender_name);
+              const color = randomColor({
+                seed: groupSenderName,
+              });
+              const isMe = groupSenderName === myName;
+
+              return (
+                <div
+                  className={cx('flex gap-2', {
+                    'flex-row-reverse': isMe,
+                  })}
+                  key={groupIdx}
+                >
+                  {/* Avatar */}
+                  <div className='flex flex-col items-center justify-end'>
+                    <div
+                      style={{
+                        backgroundColor: color,
+                      }}
+                      className='h-8 w-8 rounded-full'
+                    />
+                  </div>
+
+                  {/* Messages */}
+                  <div
+                    className='item flex flex-col justify-between gap-0.5'
+                    style={{
+                      maxWidth: '75%',
+                    }}
+                  >
+                    {!isMe && (
+                      <small className='pl-2 text-gray-400'>
+                        {groupSenderName}
+                      </small>
+                    )}
+
+                    {messages.map((message, i) => {
+                      const isFirst = i === 0;
+                      const isLast = i === messages.length - 1;
+                      const isFirstOrLast = isFirst || isLast;
+                      const isBetween = !isFirstOrLast;
+
+                      const content = decodeString(message.content || '');
+
+                      return content ? (
+                        <div
+                          key={`message_${message.sender_name}_${groupIdx}_${i}`}
+                          className={cx('flex', {
+                            'justify-end': isMe,
+                          })}
+                        >
+                          <div
+                            className={cx(
+                              'whitespace-pre-wrap rounded-2xl px-4 py-2',
+                              {
+                                'rounded-r-md bg-blue-400 text-white': isMe,
+                                'rounded-l-md bg-gray-200': !isMe,
+                                'rounded-tl-2xl': isFirst && !isMe,
+                                'rounded-bl-2xl': isLast && !isMe,
+                                'rounded-tr-2xl': isFirst && isMe,
+                                'rounded-br-2xl': isLast && isMe,
+                              }
+                            )}
+                          >
+                            {content}
+                          </div>
+                        </div>
+                      ) : null;
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
