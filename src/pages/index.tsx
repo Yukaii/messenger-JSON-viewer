@@ -337,14 +337,16 @@ export default function HomePage() {
                   key={groupIdx}
                 >
                   {/* Avatar */}
-                  <div className='flex flex-col items-center justify-end'>
-                    <div
-                      style={{
-                        backgroundColor: color,
-                      }}
-                      className='h-8 w-8 rounded-full'
-                    />
-                  </div>
+                  {!isMe && (
+                    <div className='flex flex-col items-center justify-end'>
+                      <div
+                        style={{
+                          backgroundColor: color,
+                        }}
+                        className='h-8 w-8 rounded-full'
+                      />
+                    </div>
+                  )}
 
                   {/* Messages */}
                   <div
@@ -363,7 +365,6 @@ export default function HomePage() {
                       const isFirst = i === 0;
                       const isLast = i === messages.length - 1;
                       const isFirstOrLast = isFirst || isLast;
-                      const isBetween = !isFirstOrLast;
 
                       const content = decodeString(message.content || '');
 
