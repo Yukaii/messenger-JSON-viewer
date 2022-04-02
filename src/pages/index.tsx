@@ -269,7 +269,7 @@ export default function HomePage() {
         >
           <div className='flex flex-col items-start justify-center border-b border-solid px-4 py-4'>
             <div className='mb-4 flex w-full items-center justify-between'>
-              <h3 className='text-lg font-semibold'>
+              <h3 className='select-none text-lg font-semibold'>
                 Viewing {myName}&#39;s chat history
               </h3>
 
@@ -293,7 +293,10 @@ export default function HomePage() {
 
           <div className='overflow-y-auto overflow-x-hidden'>
             {chats.map((chat) => (
-              <div className='max-w-full px-1 py-1.5' key={chat.dirName}>
+              <div
+                className='max-w-full cursor-default px-1 py-1.5'
+                key={chat.dirName}
+              >
                 <div
                   className={cx(
                     'flex flex-col rounded-lg py-3 px-5 hover:bg-gray-100',
@@ -319,15 +322,21 @@ export default function HomePage() {
 
         {/* Message boxes */}
         <div className='flex flex-1 flex-col'>
-          <div className='flex w-full items-center border-b py-4 px-4'>Nav</div>
+          <div className='flex w-full items-center border-b py-4 px-4'>
+            <h3 className='select-none text-lg font-semibold'>
+              {currentMessage
+                ? decodeString(currentMessage.title)
+                : 'Please select chat to view'}
+            </h3>
+          </div>
 
           <div className='flex flex-1 flex-col gap-5 overflow-y-auto break-all px-4 py-4'>
             {messagesGroupedByConsecutiveSender.map((messages, groupIdx) => {
-              const groupSenderName = decodeString(messages[0].sender_name);
+              const sectionSenderName = decodeString(messages[0].sender_name);
               const color = randomColor({
-                seed: groupSenderName,
+                seed: sectionSenderName,
               });
-              const isMe = groupSenderName === myName;
+              const isMe = sectionSenderName === myName;
 
               return (
                 <div
@@ -356,15 +365,14 @@ export default function HomePage() {
                     }}
                   >
                     {!isMe && (
-                      <small className='pl-2 text-gray-400'>
-                        {groupSenderName}
+                      <small className='select-none pl-2 text-gray-400'>
+                        {sectionSenderName}
                       </small>
                     )}
 
                     {messages.map((message, i) => {
                       const isFirst = i === 0;
                       const isLast = i === messages.length - 1;
-                      const isFirstOrLast = isFirst || isLast;
 
                       const content = decodeString(message.content || '');
 
