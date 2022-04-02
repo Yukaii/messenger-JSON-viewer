@@ -13,6 +13,21 @@ import {
   useGroupedMessages,
 } from '@/lib/utils/message';
 
+function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
+  return (
+    <div className='flex h-full flex-col items-center justify-center'>
+      <div>
+        <button
+          className='rounded px-4 py-2 ring-1 hover:bg-indigo-500 hover:text-white'
+          onClick={openDirPicker}
+        >
+          Select Messenger archived folder
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [directory, setDirectory] = useState<FileSystemDirectoryHandle | null>(
     null
@@ -58,18 +73,7 @@ export default function HomePage() {
   };
 
   if (!data || data.length === 0) {
-    return (
-      <div className='flex h-full flex-col items-center justify-center'>
-        <div>
-          <button
-            className='rounded px-4 py-2 ring-1 hover:bg-indigo-500 hover:text-white'
-            onClick={openDirPicker}
-          >
-            Select Messenger archived folder
-          </button>
-        </div>
-      </div>
-    );
+    return <StartScreen openDirPicker={openDirPicker} />;
   } else {
     return (
       <div className='flex h-full'>
