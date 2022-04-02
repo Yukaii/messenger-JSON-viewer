@@ -18,8 +18,13 @@
 - [ ] Reactions
 - [ ] Subscribe/Unsubscribe message
 - [ ] Attachments
-- [ ] Info Panel
-  - [ ] Statistic
+- [ ] Stickers
+- [ ] Calendar
+- [ ] Date
+- Info Panel
+  - Statistic
+    - [ ] message count (from both side)
+  - [ ] Photos View
   
 ## Previous works
 
