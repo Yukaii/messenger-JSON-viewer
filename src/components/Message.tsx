@@ -1,23 +1,25 @@
+/* eslint-disable @next/next/no-img-element */
 import cx from 'classnames';
+import { SRLWrapper } from 'simple-react-lightbox';
+import useSWR from 'swr';
 
+import { getFileHandleRecursively } from '@/lib/utils/file';
 import { decodeString } from '@/lib/utils/message';
 
-import { Message } from '@/types';
+import { Message, MessageType } from '../types';
 
-export default function Message({
-  message,
+function BaseMessage({
+  children,
   isFirst,
   isLast,
   isMe,
 }: {
-  message: Message;
+  children?: React.ReactNode;
   isFirst: boolean;
   isLast: boolean;
   isMe: boolean;
 }) {
-  const content = decodeString(message.content || '');
-
-  return content ? (
+  return (
     <div
       className={cx('flex', {
         'justify-end': isMe,
@@ -33,8 +35,80 @@ export default function Message({
           'rounded-br-2xl': isLast && isMe,
         })}
       >
-        {content}
+        {children}
       </div>
     </div>
-  ) : null;
+  );
+}
+
+export default function MessageComponent({
+  message,
+  isFirst,
+  isLast,
+  isMe,
+  rootDir,
+}: {
+  message: Message;
+  isFirst: boolean;
+  isLast: boolean;
+  isMe: boolean;
+  rootDir: FileSystemDirectoryHandle;
+}) {
+  const content = decodeString(message.content || '');
+  const { data: imageURIs } = useSWR(
+    () =>
+      message.type === MessageType.Generic && message.photos
+        ? `/message/photo/${message.timestamp_ms}`
+        : null,
+    async () => {
+      if (!(message.type === MessageType.Generic && message.photos)) {
+        return [];
+      }
+
+      const images = await Promise.all(
+        message.photos.map(async (photo) => {
+          const uri = photo.uri.replace(/^messages\//, '');
+          const fileHandle = await getFileHandleRecursively(rootDir, uri);
+          if (!fileHandle) {
+            return null;
+          }
+          const file = await fileHandle.getFile();
+          const url = URL.createObjectURL(file);
+          return url;
+        })
+      );
+
+      return images.filter(Boolean) as string[];
+    }
+  );
+
+  switch (message.type) {
+    case MessageType.Generic: {
+      if (message.photos) {
+        return (
+          <SRLWrapper>
+            <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
+              {imageURIs
+                ? imageURIs.map((uri) => (
+                    <a href={uri} key={uri}>
+                      <img src={uri} alt={uri} />
+                    </a>
+                  ))
+                : content}
+            </BaseMessage>
+          </SRLWrapper>
+        );
+      } else if (message.content) {
+        return (
+          <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
+            {content}
+          </BaseMessage>
+        );
+      } else {
+        return null;
+      }
+    }
+    default:
+      return null;
+  }
 }

@@ -13,7 +13,7 @@ import {
   useGroupedMessages,
 } from '@/lib/utils/message';
 
-import Message from '@/components/Message';
+import MessageComponent from '@/components/Message';
 
 function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
   return (
@@ -37,6 +37,7 @@ export default function HomePage() {
   const [inboxDir, setInboxDir] = useState<FileSystemDirectoryHandle | null>(
     null
   );
+  const [search, setSearch] = useState('');
 
   const [folderName, setFolderName] = useState<string | null>(null);
   const currentMessage = useCurrentMessage(folderName);
@@ -55,8 +56,10 @@ export default function HomePage() {
       return [];
     }
 
-    return data.sort((a, b) => b.lastSent - a.lastSent);
-  }, [data]);
+    return data
+      .sort((a, b) => b.lastSent - a.lastSent)
+      .filter((c) => c.title.includes(search) || c.dirName.includes(search));
+  }, [data, search]);
 
   const openDirPicker = async () => {
     try {
@@ -81,7 +84,7 @@ export default function HomePage() {
       <div className='flex h-full'>
         {/* Sidebar */}
         <div
-          className='flex h-full max-h-full flex-col border-r border-solid'
+          className='flex h-full max-h-full w-full flex-col border-r border-solid'
           style={{ maxWidth: 350 }}
         >
           <div className='flex flex-col items-start justify-center border-b border-solid px-4 py-4'>
@@ -99,6 +102,8 @@ export default function HomePage() {
               <input
                 placeholder='Search for user...'
                 className='w-full rounded-lg border-none bg-gray-100 py-2 px-4 pl-8 text-sm text-gray-500 outline-none ring-1 ring-gray-100 focus:ring-2 focus:ring-blue-200'
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
               <SearchIcon
                 className='absolute top-0 left-2.5 h-full stroke-gray-500'
@@ -178,7 +183,7 @@ export default function HomePage() {
                   <div
                     className='item flex flex-col justify-between gap-0.5'
                     style={{
-                      maxWidth: '75%',
+                      maxWidth: '65%',
                     }}
                   >
                     {!isMe && (
@@ -192,7 +197,8 @@ export default function HomePage() {
                       const isLast = i === messages.length - 1;
 
                       return (
-                        <Message
+                        <MessageComponent
+                          rootDir={directory!}
                           message={message}
                           key={`message_${message.sender_name}_${groupIdx}_${i}`}
                           isFirst={isFirst}

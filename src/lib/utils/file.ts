@@ -42,3 +42,19 @@ export async function readAutofillInformation(dir: FileSystemDirectoryHandle) {
     return null;
   }
 }
+
+export async function getFileHandleRecursively(
+  root: FileSystemDirectoryHandle,
+  path: string
+): Promise<FileSystemFileHandle | null> {
+  const parts = path.split('/');
+
+  if (parts.length === 0) {
+    return null;
+  } else if (parts.length === 1) {
+    return root.getFileHandle(parts[0]);
+  } else {
+    const dir = await root.getDirectoryHandle(parts[0]);
+    return getFileHandleRecursively(dir, parts.slice(1).join('/'));
+  }
+}

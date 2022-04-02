@@ -4,7 +4,7 @@ export type Chat = {
   lastSent: number;
   title: string;
 };
-enum MessageType {
+export enum MessageType {
   Generic = 'Generic',
   Unsubscribe = 'Unsubscribe',
   Subscribe = 'Subscribe',

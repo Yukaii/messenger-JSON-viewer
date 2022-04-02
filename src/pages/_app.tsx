@@ -1,11 +1,12 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import SimpleReactLightbox from 'simple-react-lightbox';
 
 import '@/styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Component {...pageProps}>
+    <SimpleReactLightbox>
       <Head>
         <meta
           name='viewport'
@@ -33,7 +34,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name='msapplication-tap-highlight' content='no' />
         <meta name='theme-color' content='#000000' />
       </Head>
-    </Component>
+
+      <Component {...pageProps}></Component>
+    </SimpleReactLightbox>
   );
 }
 
