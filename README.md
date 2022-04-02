@@ -13,13 +13,17 @@
 
 ## TODOs
 
-- [ ] Image type message
+- [x] Image type message
 - [ ] Link
 - [ ] Reactions
 - [ ] Subscribe/Unsubscribe message
 - [ ] Attachments
 - [ ] Info Panel
   - [ ] Statistic
+  
+## Previous works
+
+- <https://github.com/simonwongwong/Facebook-Messenger-JSON-viewer>
 
 ## 其它
 
