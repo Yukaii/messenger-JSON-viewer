@@ -20,6 +20,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
     "clsx": "^1.1.1",
     "next": "^12.1.0",
     "react": "^17.0.2",
@@ -59,7 +60,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,}": [
-      "eslint --max-warnings=0",
+      "eslint",
       "prettier -w"
     ],
     "src/**/*.{json,css,scss,md}": [
