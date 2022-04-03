@@ -42,6 +42,10 @@ export type Message = (
   timestamp_ms: number;
   content: string;
   is_unsent: boolean;
+  reactions?: {
+    reaction: string;
+    actor: string;
+  }[];
 };
 
 export type MessageData = {

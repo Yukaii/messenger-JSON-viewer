@@ -14,14 +14,14 @@
 ## TODOs
 
 - [x] Image type message
-- [ ] Link
-- [ ] Reactions
+- [x] Link
+- [x] Reactions
 - [ ] Subscribe/Unsubscribe message
 - [ ] Attachments
 - [ ] Stickers
 - [ ] Calendar
 - Date
-  - [ ] Sent at for each message
+  - [x] Sent at for each message
   - [ ] Date separator
 - Info Panel
   - Statistic

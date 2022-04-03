@@ -6,9 +6,35 @@ import useSWR from 'swr';
 
 import useToggle from '@/lib/hooks/useToggle';
 import { getFileHandleRecursively } from '@/lib/utils/file';
-import { decodeString } from '@/lib/utils/message';
+import { decodeString, useGroupedActorsByReaction } from '@/lib/utils/message';
 
 import { Message, MessageType } from '../types';
+
+function ReactionButton({
+  reaction,
+  actors,
+}: {
+  reaction: string;
+  actors: string[];
+}) {
+  const [isPopoverOpen, setPopoverOpen, togglePopover] = useToggle(false);
+
+  return (
+    <Popover
+      isOpen={isPopoverOpen}
+      positions={['top']}
+      padding={10}
+      content={() => (
+        <div className='rounded bg-gray-800 py-0.5 px-1 text-white opacity-70'>
+          {actors.map(decodeString).join(', ')}
+        </div>
+      )}
+      onClickOutside={() => setPopoverOpen(false)}
+    >
+      <span onClick={togglePopover}>{decodeString(reaction)}</span>
+    </Popover>
+  );
+}
 
 function BaseMessage({
   children,
@@ -26,27 +52,28 @@ function BaseMessage({
   className?: string;
 }) {
   const [isPopoverOpen, setPopoverOpen, togglePopover] = useToggle(false);
+  const groupedActions = useGroupedActorsByReaction(message);
 
   return (
-    <Popover
-      isOpen={isPopoverOpen}
-      positions={['left']}
-      padding={10}
-      content={() => (
-        <div className='rounded bg-slate-600 py-0.5 px-1 text-white opacity-70'>
-          {new Date(message.timestamp_ms).toLocaleString()}
-        </div>
-      )}
-      onClickOutside={() => setPopoverOpen(false)}
+    <div
+      className={cx('flex', {
+        'justify-end': isMe,
+      })}
     >
-      <div
-        className={cx('flex', {
-          'justify-end': isMe,
-        })}
+      <Popover
+        isOpen={isPopoverOpen}
+        positions={['left']}
+        padding={10}
+        content={() => (
+          <div className='rounded bg-gray-800 py-0.5 px-1 text-white opacity-70'>
+            {new Date(message.timestamp_ms).toLocaleString()}
+          </div>
+        )}
+        onClickOutside={() => setPopoverOpen(false)}
       >
         <div
           className={cx(
-            'whitespace-pre-wrap rounded-2xl px-4 py-2',
+            'relative whitespace-pre-wrap rounded-2xl px-4 py-2',
             {
               'rounded-r-md bg-blue-400 text-white': isMe,
               'rounded-l-md bg-gray-200': !isMe,
@@ -62,9 +89,21 @@ function BaseMessage({
           }}
         >
           {children}
+
+          {groupedActions && (
+            <div className='absolute right-2 -bottom-5 select-none rounded-2xl bg-white px-2 py-0.5 shadow'>
+              {Object.entries(groupedActions).map(([reaction, actors]) => (
+                <ReactionButton
+                  key={reaction}
+                  reaction={reaction}
+                  actors={actors}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      </div>
-    </Popover>
+      </Popover>
+    </div>
   );
 }
 

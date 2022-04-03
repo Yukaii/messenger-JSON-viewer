@@ -133,3 +133,28 @@ export function useChatStatistics(currentMessage: MessageData | null) {
     };
   }, [currentMessage]);
 }
+
+export function groupActorsByReaction(
+  reactions: Required<Message>['reactions']
+) {
+  return reactions.reduce((acc, cur) => {
+    if (!acc[cur.reaction]) {
+      acc[cur.reaction] = [cur.actor];
+    } else {
+      if (!acc[cur.reaction].includes(cur.actor)) {
+        acc[cur.reaction].push(cur.actor);
+      }
+    }
+    return acc;
+  }, {} as Record<string, string[]>);
+}
+
+export function useGroupedActorsByReaction(message: Message) {
+  return useMemo(() => {
+    if (!message.reactions) {
+      return null;
+    }
+
+    return groupActorsByReaction(message.reactions);
+  }, [message]);
+}
