@@ -160,7 +160,7 @@ export default function HomePage() {
                 >
                   <div
                     className={cx(
-                      'flex flex-col rounded-lg py-3 px-5 hover:bg-gray-100 hover:dark:bg-gray-600',
+                      'flex items-center gap-2 rounded-lg py-3 px-5 hover:bg-gray-100 hover:dark:bg-gray-600',
                       {
                         'bg-gray-100 dark:bg-gray-600':
                           folderName === chat.dirName,
@@ -170,12 +170,28 @@ export default function HomePage() {
                       setFolderName(chat.dirName);
                     }}
                   >
-                    <span className='mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap'>
-                      {chat.title}
-                    </span>
-                    <small className='max-w-full overflow-hidden text-ellipsis text-gray-400'>
-                      {chat.dirName}
-                    </small>
+                    <div
+                      className='flex h-9 w-9 select-none items-center justify-center rounded-full text-xl text-white'
+                      style={{
+                        minWidth: '2.25rem',
+                        minHeight: '2.25rem',
+                        backgroundColor: randomColor({
+                          luminosity: 'dark',
+                          seed: chat.dirName,
+                        }),
+                      }}
+                    >
+                      {chat.title[0]}
+                    </div>
+
+                    <div className='flex flex-col'>
+                      <span className='mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap'>
+                        {chat.title}
+                      </span>
+                      <small className='max-w-full overflow-hidden text-ellipsis text-gray-400'>
+                        {chat.dirName}
+                      </small>
+                    </div>
                   </div>
                 </div>
               ))}
