@@ -386,7 +386,12 @@ export default function HomePage() {
                       </span>
 
                       <span className='ml-2 text-base text-gray-500'>
-                        {count}
+                        (
+                        {(
+                          (count / currentMessage.messages.length) *
+                          100
+                        ).toFixed(1)}
+                        % ) {count}
                       </span>
                     </div>
                   ))}
