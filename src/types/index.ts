@@ -36,11 +36,14 @@ export type Message = (
         uri: string;
         creation_timestamp: number;
       }[];
+      sticker?: {
+        uri: string;
+      };
     }
 ) & {
   sender_name: string;
   timestamp_ms: number;
-  content: string;
+  content?: string;
   is_unsent: boolean;
   reactions?: {
     reaction: string;

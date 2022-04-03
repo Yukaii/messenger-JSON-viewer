@@ -8,6 +8,7 @@ import useToggle from '@/lib/hooks/useToggle';
 import { getFileHandleRecursively } from '@/lib/utils/file';
 import { decodeString, useGroupedActorsByReaction } from '@/lib/utils/message';
 
+import FsImage from './FsImage';
 import { Message, MessageType } from '../types';
 
 function ReactionButton({
@@ -43,6 +44,7 @@ function BaseMessage({
   isMe,
   className,
   message,
+  transparentBG,
 }: {
   message: Message;
   children?: React.ReactNode;
@@ -50,6 +52,7 @@ function BaseMessage({
   isLast: boolean;
   isMe: boolean;
   className?: string;
+  transparentBG?: boolean;
 }) {
   const [isPopoverOpen, setPopoverOpen, togglePopover] = useToggle(false);
   const groupedActions = useGroupedActorsByReaction(message);
@@ -75,12 +78,15 @@ function BaseMessage({
           className={cx(
             'relative whitespace-pre-wrap rounded-2xl px-4 py-2',
             {
-              'rounded-r-md bg-blue-400 text-white dark:bg-blue-700': isMe,
-              'rounded-l-md bg-gray-200 dark:bg-slate-800': !isMe,
+              'rounded-r-md  text-white ': isMe,
+              'bg-blue-400 dark:bg-blue-700': isMe && !transparentBG,
+              'rounded-l-md dark:bg-slate-800': !isMe,
+              'bg-gray-200': !isMe && !transparentBG,
               'rounded-tl-2xl': isFirst && !isMe,
               'rounded-bl-2xl': isLast && !isMe,
               'rounded-tr-2xl': isFirst && isMe,
               'rounded-br-2xl': isLast && isMe,
+              'bg-transparent dark:bg-transparent': transparentBG,
             },
             className
           )}
@@ -197,8 +203,23 @@ export default function MessageComponent({
         );
       } else if (message.content) {
         return renderDefault();
+      } else if (message.sticker) {
+        return (
+          <BaseMessage
+            isFirst={isFirst}
+            isLast={isLast}
+            isMe={isMe}
+            message={message}
+            transparentBG
+          >
+            <FsImage
+              root={rootDir}
+              path={message.sticker.uri.replace(/^messages\//, '')}
+            />
+          </BaseMessage>
+        );
       } else {
-        return null;
+        return renderDefault();
       }
     }
     case MessageType.Share: {
