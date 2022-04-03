@@ -30,7 +30,7 @@ function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
     <div className='flex h-full flex-col items-center justify-center'>
       <div>
         <button
-          className='rounded px-4 py-2 ring-1 hover:bg-indigo-500 hover:text-white'
+          className='rounded px-4 py-2 ring-1 hover:bg-blue-500 hover:text-white'
           onClick={openDirPicker}
         >
           Select Messenger archived folder
