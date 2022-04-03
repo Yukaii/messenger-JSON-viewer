@@ -25,7 +25,7 @@ function ReactionButton({
       positions={['top']}
       padding={10}
       content={() => (
-        <div className='rounded bg-gray-800 py-0.5 px-1 text-white opacity-70'>
+        <div className='rounded bg-gray-600 py-0.5 px-1 text-white'>
           {actors.map(decodeString).join(', ')}
         </div>
       )}
@@ -65,7 +65,7 @@ function BaseMessage({
         positions={['left']}
         padding={10}
         content={() => (
-          <div className='rounded bg-gray-800 py-0.5 px-1 text-white opacity-70 dark:bg-gray-600'>
+          <div className='rounded bg-gray-600 py-0.5 px-1 text-white'>
             {new Date(message.timestamp_ms).toLocaleString()}
           </div>
         )}
