@@ -170,7 +170,7 @@ export default function MessageComponent({
       isFirst={isFirst}
       isLast={isLast}
       isMe={isMe}
-      className='bg-red-500 text-white'
+      className='bg-red-500 text-white dark:bg-red-700'
       message={message}
     >
       Not implemented
