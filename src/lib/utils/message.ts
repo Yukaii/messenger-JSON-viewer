@@ -124,7 +124,7 @@ export function useChatStatistics(currentMessage: MessageData | null) {
 
     const countInfo = countMessageBySenderName(currentMessage.messages);
     const createdAt = currentMessage.messages.sort(
-      (a, b) => b.timestamp_ms - a.timestamp_ms
+      (a, b) => a.timestamp_ms - b.timestamp_ms
     )[0].timestamp_ms;
 
     return {

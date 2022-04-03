@@ -197,7 +197,7 @@ export default function HomePage() {
                       {chat.title[0]}
                     </div>
 
-                    <div className='flex flex-col'>
+                    <div className='flex max-w-full flex-col'>
                       <span className='mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap'>
                         {chat.title}
                       </span>
