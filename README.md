@@ -20,10 +20,12 @@
 - [ ] Attachments
 - [ ] Stickers
 - [ ] Calendar
-- [ ] Date
+- Date
+  - [ ] Sent at for each message
+  - [ ] Date separator
 - Info Panel
   - Statistic
-    - [ ] message count (from both side)
+    - [x] message count (from both side)
   - [ ] Photos View
   
 ## Previous works
