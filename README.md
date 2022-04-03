@@ -11,6 +11,16 @@
 4. Tada!
    ![offline-viewer](./docs/images/offline-viewer.png)
 
+## Features
+
+### Simple statistic
+
+![statistic](./docs/images/statistic.png)
+
+### Choose chatroom just as what you can do on Messenger
+
+![offline-viewer](./docs/images/offline-viewer.png)
+
 ## TODOs
 
 - [x] Image type message
@@ -18,7 +28,7 @@
 - [x] Reactions
 - [ ] Subscribe/Unsubscribe message
 - [ ] Attachments
-- [ ] Stickers
+- [x] Stickers
 - [ ] Calendar
 - Date
   - [x] Sent at for each message
