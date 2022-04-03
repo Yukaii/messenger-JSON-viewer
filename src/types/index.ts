@@ -24,7 +24,7 @@ export type Message = (
     }
   | {
       type: MessageType.Share;
-      share: {
+      share?: {
         link: string;
       };
     }

@@ -13,11 +13,13 @@ function BaseMessage({
   isFirst,
   isLast,
   isMe,
+  className,
 }: {
   children?: React.ReactNode;
   isFirst: boolean;
   isLast: boolean;
   isMe: boolean;
+  className?: string;
 }) {
   return (
     <div
@@ -26,14 +28,18 @@ function BaseMessage({
       })}
     >
       <div
-        className={cx('whitespace-pre-wrap rounded-2xl px-4 py-2', {
-          'rounded-r-md bg-blue-400 text-white': isMe,
-          'rounded-l-md bg-gray-200': !isMe,
-          'rounded-tl-2xl': isFirst && !isMe,
-          'rounded-bl-2xl': isLast && !isMe,
-          'rounded-tr-2xl': isFirst && isMe,
-          'rounded-br-2xl': isLast && isMe,
-        })}
+        className={cx(
+          'whitespace-pre-wrap rounded-2xl px-4 py-2',
+          {
+            'rounded-r-md bg-blue-400 text-white': isMe,
+            'rounded-l-md bg-gray-200': !isMe,
+            'rounded-tl-2xl': isFirst && !isMe,
+            'rounded-bl-2xl': isLast && !isMe,
+            'rounded-tr-2xl': isFirst && isMe,
+            'rounded-br-2xl': isLast && isMe,
+          },
+          className
+        )}
       >
         {children}
       </div>
@@ -111,7 +117,7 @@ export default function MessageComponent({
       }
     }
     case MessageType.Share: {
-      if (message.share.link) {
+      if (message.share?.link) {
         return (
           <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
             <a
@@ -130,8 +136,16 @@ export default function MessageComponent({
     }
     default:
       return (
-        <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
-          {JSON.stringify(message)}
+        <BaseMessage
+          isFirst={isFirst}
+          isLast={isLast}
+          isMe={isMe}
+          className='bg-red-500 text-white'
+        >
+          Not implemented
+          <pre className='mt-3 whitespace-pre-wrap text-xs'>
+            <code>{JSON.stringify(message)}</code>
+          </pre>
         </BaseMessage>
       );
   }
