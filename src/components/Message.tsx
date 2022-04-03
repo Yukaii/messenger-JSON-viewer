@@ -82,6 +82,12 @@ export default function MessageComponent({
     }
   );
 
+  const renderDefault = () => (
+    <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
+      {content}
+    </BaseMessage>
+  );
+
   switch (message.type) {
     case MessageType.Generic: {
       if (message.photos) {
@@ -99,16 +105,34 @@ export default function MessageComponent({
           </SRLWrapper>
         );
       } else if (message.content) {
-        return (
-          <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
-            {content}
-          </BaseMessage>
-        );
+        return renderDefault();
       } else {
         return null;
       }
     }
+    case MessageType.Share: {
+      if (message.share.link) {
+        return (
+          <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
+            <a
+              href={message.share.link}
+              target='_blank'
+              rel='noreferrer'
+              className='underline'
+            >
+              {content}
+            </a>
+          </BaseMessage>
+        );
+      } else {
+        return renderDefault();
+      }
+    }
     default:
-      return null;
+      return (
+        <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
+          {JSON.stringify(message)}
+        </BaseMessage>
+      );
   }
 }
