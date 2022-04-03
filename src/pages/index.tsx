@@ -1,9 +1,14 @@
-import { RefreshIcon, SearchIcon } from '@heroicons/react/outline';
+import {
+  InformationCircleIcon,
+  RefreshIcon,
+  SearchIcon,
+} from '@heroicons/react/outline';
 import cx from 'classnames';
 import randomColor from 'randomcolor';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 
+import useToggle from '@/lib/hooks/useToggle';
 import { findInboxFolder } from '@/lib/utils/file';
 import {
   decodeString,
@@ -13,6 +18,7 @@ import {
   useGroupedMessages,
 } from '@/lib/utils/message';
 
+import Collapsible from '@/components/Collapsible';
 import MessageComponent from '@/components/Message';
 
 function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
@@ -38,6 +44,12 @@ export default function HomePage() {
     null
   );
   const [search, setSearch] = useState('');
+  const [infoPanelOpen, setInfoPanelOpen, toggleInfoPanel] = useToggle(false);
+  const [
+    chatMembersInfoExpanded,
+    setChatMembersInfoExpanded,
+    toggleChatMembersInfo,
+  ] = useToggle(false);
 
   const [folderName, setFolderName] = useState<string | null>(null);
   const currentMessage = useCurrentMessage(folderName);
@@ -144,12 +156,19 @@ export default function HomePage() {
 
         {/* Message boxes */}
         <div className='flex flex-1 flex-col'>
-          <div className='flex w-full items-center border-b py-4 px-4'>
+          <div className='flex w-full items-center justify-between border-b py-4 px-4'>
             <h3 className='select-none text-lg font-semibold'>
               {currentMessage
                 ? decodeString(currentMessage.title)
                 : 'Please select chat to view'}
             </h3>
+
+            <button
+              className='rounded-full border-none p-2 hover:bg-gray-100'
+              onClick={toggleInfoPanel}
+            >
+              <InformationCircleIcon width={18} />
+            </button>
           </div>
 
           <div className='flex flex-1 flex-col gap-5 overflow-y-auto break-all px-4 py-4'>
@@ -213,6 +232,44 @@ export default function HomePage() {
             })}
           </div>
         </div>
+
+        {/* Info Panel */}
+        {infoPanelOpen && currentMessage && (
+          <div
+            className='flex h-full w-full flex-col gap-4 border-l py-4 px-4'
+            style={{ maxWidth: 350 }}
+          >
+            <h3 className='select-none text-center text-lg font-semibold'>
+              {decodeString(currentMessage.title)}
+            </h3>
+
+            <Collapsible
+              title='Chat Members'
+              containerClassName='flex flex-col gap-4 py-4'
+              isExpanded={chatMembersInfoExpanded}
+              onToggle={toggleChatMembersInfo}
+            >
+              {currentMessage.participants.map((part) => {
+                const color = randomColor({
+                  seed: part.name,
+                });
+
+                return (
+                  <div className='flex gap-2' key={part.name}>
+                    <div
+                      style={{
+                        backgroundColor: color,
+                      }}
+                      className='h-6 w-6 rounded-full'
+                    />
+
+                    <span className='text-base'>{decodeString(part.name)}</span>
+                  </div>
+                );
+              })}
+            </Collapsible>
+          </div>
+        )}
       </div>
     );
   }
