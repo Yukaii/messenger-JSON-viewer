@@ -60,7 +60,10 @@ export default function HomePage() {
 
   const { dark, toggleTheme, theme } = useTheme();
 
-  const { data } = useSWR('chats', () => loadChats(inboxDir));
+  const { data } = useSWR(
+    () => inboxDir?.name && ['chats', inboxDir?.name],
+    () => loadChats(inboxDir)
+  );
   const { data: myName = null } = useSWR(
     () => (directory ? 'myName' : false),
     () => {
@@ -114,11 +117,20 @@ export default function HomePage() {
                 <button
                   className='rounded-full border-none p-2 hover:bg-gray-100 hover:dark:bg-gray-600'
                   onClick={toggleTheme}
+                  title='Toggle Theme'
                 >
                   {dark ? <MoonIcon width={18} /> : <SunIcon width={18} />}
                 </button>
 
-                <button className='rounded-full border-none p-2 hover:bg-gray-100 hover:dark:bg-gray-600'>
+                <button
+                  className='rounded-full border-none p-2 hover:bg-gray-100 hover:dark:bg-gray-600'
+                  title='Start Over'
+                  onClick={() => {
+                    setDirectory(null);
+                    setInboxDir(null);
+                    setFolderName(null);
+                  }}
+                >
                   <RefreshIcon width={18} />
                 </button>
               </div>
