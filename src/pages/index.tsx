@@ -139,34 +139,44 @@ export default function HomePage() {
             </label>
           </div>
 
-          <div className='overflow-y-auto overflow-x-hidden'>
-            {chats.map((chat) => (
-              <div
-                className='max-w-full cursor-default px-1 py-1.5'
-                key={chat.dirName}
-              >
+          {chats.length > 0 && (
+            <div className='overflow-y-auto overflow-x-hidden'>
+              {chats.map((chat) => (
                 <div
-                  className={cx(
-                    'flex flex-col rounded-lg py-3 px-5 hover:bg-gray-100 hover:dark:bg-gray-600',
-                    {
-                      'bg-gray-100 dark:bg-gray-600':
-                        folderName === chat.dirName,
-                    }
-                  )}
-                  onClick={() => {
-                    setFolderName(chat.dirName);
-                  }}
+                  className='max-w-full cursor-default px-1 py-1.5'
+                  key={chat.dirName}
                 >
-                  <span className='mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap'>
-                    {chat.title}
-                  </span>
-                  <small className='max-w-full overflow-hidden text-ellipsis text-gray-400'>
-                    {chat.dirName}
-                  </small>
+                  <div
+                    className={cx(
+                      'flex flex-col rounded-lg py-3 px-5 hover:bg-gray-100 hover:dark:bg-gray-600',
+                      {
+                        'bg-gray-100 dark:bg-gray-600':
+                          folderName === chat.dirName,
+                      }
+                    )}
+                    onClick={() => {
+                      setFolderName(chat.dirName);
+                    }}
+                  >
+                    <span className='mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap'>
+                      {chat.title}
+                    </span>
+                    <small className='max-w-full overflow-hidden text-ellipsis text-gray-400'>
+                      {chat.dirName}
+                    </small>
+                  </div>
                 </div>
+              ))}
+            </div>
+          )}
+
+          {chats.length === 0 && (
+            <div className='flex h-full w-full select-none justify-center'>
+              <div className='pt-6 text-gray-600 dark:text-gray-500'>
+                No results
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Message boxes */}
