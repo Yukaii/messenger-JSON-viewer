@@ -14,6 +14,7 @@ import {
   decodeString,
   getMyselfName,
   loadChats,
+  useChatStatistics,
   useCurrentMessage,
   useGroupedMessages,
 } from '@/lib/utils/message';
@@ -44,16 +45,15 @@ export default function HomePage() {
     null
   );
   const [search, setSearch] = useState('');
-  const [infoPanelOpen, setInfoPanelOpen, toggleInfoPanel] = useToggle(false);
-  const [
-    chatMembersInfoExpanded,
-    setChatMembersInfoExpanded,
-    toggleChatMembersInfo,
-  ] = useToggle(false);
+  const [infoPanelOpen, , toggleInfoPanel] = useToggle(false);
+  const [chatMembersInfoExpanded, , toggleChatMembersInfo] = useToggle(false);
+  const [messageCountExpanded, , toggleMessageCount] = useToggle(false);
+  const [chatInfoExpanded, , toggleChatInfo] = useToggle(false);
 
   const [folderName, setFolderName] = useState<string | null>(null);
   const currentMessage = useCurrentMessage(folderName);
   const groupedMessages = useGroupedMessages(currentMessage);
+  const chatStatistic = useChatStatistics(currentMessage);
 
   const { data } = useSWR('chats', () => loadChats(inboxDir));
   const { data: myName = null } = useSWR(
@@ -102,7 +102,7 @@ export default function HomePage() {
           <div className='flex flex-col items-start justify-center border-b border-solid px-4 py-4'>
             <div className='mb-4 flex w-full items-center justify-between'>
               <h3 className='select-none text-lg font-semibold'>
-                Viewing {myName}&#39;s chat history
+                {myName}&#39;s chat history
               </h3>
 
               <button className='rounded-full border-none p-2 hover:bg-gray-100'>
@@ -236,16 +236,16 @@ export default function HomePage() {
         {/* Info Panel */}
         {infoPanelOpen && currentMessage && (
           <div
-            className='flex h-full w-full flex-col gap-4 border-l py-4 px-4'
+            className='flex h-full w-full flex-col overflow-y-auto border-l py-4 px-4'
             style={{ maxWidth: 350 }}
           >
-            <h3 className='select-none text-center text-lg font-semibold'>
+            <h3 className='mb-4 select-none text-center text-lg font-semibold'>
               {decodeString(currentMessage.title)}
             </h3>
 
             <Collapsible
               title='Chat Members'
-              containerClassName='flex flex-col gap-4 py-4'
+              containerClassName='flex flex-col gap-4 py-4 px-5'
               isExpanded={chatMembersInfoExpanded}
               onToggle={toggleChatMembersInfo}
             >
@@ -268,6 +268,62 @@ export default function HomePage() {
                 );
               })}
             </Collapsible>
+
+            {chatStatistic && (
+              <Collapsible
+                title='Chat Information'
+                containerClassName='flex flex-col gap-4 py-4 px-5'
+                isExpanded={chatInfoExpanded}
+                onToggle={toggleChatInfo}
+              >
+                <div className='flex justify-between'>
+                  <span className='text-base font-medium'>Members count</span>
+
+                  <span className='text-base text-gray-500'>
+                    {currentMessage.participants.length}
+                  </span>
+                </div>
+
+                <div className='flex justify-between'>
+                  <span className='text-base font-medium'>Created At</span>
+
+                  <span className='text-right text-base text-gray-500'>
+                    {new Date(chatStatistic.createdAt).toLocaleString()}
+                  </span>
+                </div>
+              </Collapsible>
+            )}
+
+            {chatStatistic && (
+              <Collapsible
+                title='Messages Count'
+                isExpanded={messageCountExpanded}
+                onToggle={toggleMessageCount}
+                containerClassName='flex flex-col gap-4 py-4 px-5'
+              >
+                {Object.entries(chatStatistic.countInfo)
+                  .sort(([, aCount], [, bCount]) => bCount - aCount)
+                  .map(([senderName, count]) => (
+                    <div key={senderName} className='flex justify-between'>
+                      <span className='text-base'>
+                        {decodeString(senderName)}
+                      </span>
+
+                      <span className='ml-2 text-base text-gray-500'>
+                        {count}
+                      </span>
+                    </div>
+                  ))}
+
+                <div className='flex justify-between'>
+                  <span className='text-base font-medium'>Total</span>
+
+                  <span className='ml-2 text-base text-gray-500'>
+                    {currentMessage.messages.length}
+                  </span>
+                </div>
+              </Collapsible>
+            )}
           </div>
         )}
       </div>

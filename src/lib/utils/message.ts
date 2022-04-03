@@ -42,10 +42,12 @@ export async function loadChats(
       if (messageJSON) {
         chatCache.set(dir.name, messageJSON);
 
-        const message = JSON.parse(messageJSON);
+        const message: MessageData = JSON.parse(messageJSON);
         const name = decodeString(message.participants[0].name);
 
-        const lastSent = message.messages.slice(-1)[0].timestamp_ms as number;
+        const lastSent = message.messages.sort(
+          (a, b) => a.timestamp_ms - b.timestamp_ms
+        )[0].timestamp_ms;
 
         return {
           name,
@@ -103,5 +105,31 @@ export function useGroupedMessages(currentMessage: MessageData | null) {
     groupedMessages.push(currentGroup);
 
     return groupedMessages;
+  }, [currentMessage]);
+}
+
+function countMessageBySenderName(messages: Message[]) {
+  const count: { [senderName: string]: number } = {};
+  for (const message of messages) {
+    count[message.sender_name] = (count[message.sender_name] || 0) + 1;
+  }
+  return count;
+}
+
+export function useChatStatistics(currentMessage: MessageData | null) {
+  return useMemo(() => {
+    if (!currentMessage) {
+      return null;
+    }
+
+    const countInfo = countMessageBySenderName(currentMessage.messages);
+    const createdAt = currentMessage.messages.sort(
+      (a, b) => b.timestamp_ms - a.timestamp_ms
+    )[0].timestamp_ms;
+
+    return {
+      countInfo,
+      createdAt,
+    };
   }, [currentMessage]);
 }

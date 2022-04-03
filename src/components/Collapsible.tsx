@@ -30,7 +30,7 @@ export default function Collapsible({
       </div>
 
       <div
-        className={cx(containerClassName, 'py-3 px-2', {
+        className={cx(containerClassName, {
           hidden: !isExpanded,
         })}
       >
