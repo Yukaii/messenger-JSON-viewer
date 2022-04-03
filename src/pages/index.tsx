@@ -99,13 +99,21 @@ export default function HomePage() {
   };
 
   if (!data || data.length === 0) {
-    return <StartScreen openDirPicker={openDirPicker} />;
+    return (
+      <>
+        <Head>
+          <title>Messenger Archive Viewer</title>
+          <meta name='theme-color' content={dark ? '#121212' : '#ffffff'} />
+        </Head>
+        <StartScreen openDirPicker={openDirPicker} />;
+      </>
+    );
   } else {
     return (
       <div className='flex h-full'>
         <Head>
           <title>Messenger Archive Viewer</title>
-          <meta name='theme-color' content={dark ? '#000000' : '#ffffff'} />
+          <meta name='theme-color' content={dark ? '#121212' : '#ffffff'} />
         </Head>
         {/* Sidebar */}
         <div
