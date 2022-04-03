@@ -65,7 +65,7 @@ function BaseMessage({
         positions={['left']}
         padding={10}
         content={() => (
-          <div className='rounded bg-gray-800 py-0.5 px-1 text-white opacity-70'>
+          <div className='rounded bg-gray-800 py-0.5 px-1 text-white opacity-70 dark:bg-gray-600'>
             {new Date(message.timestamp_ms).toLocaleString()}
           </div>
         )}
@@ -75,8 +75,8 @@ function BaseMessage({
           className={cx(
             'relative whitespace-pre-wrap rounded-2xl px-4 py-2',
             {
-              'rounded-r-md bg-blue-400 text-white': isMe,
-              'rounded-l-md bg-gray-200': !isMe,
+              'rounded-r-md bg-blue-400 text-white dark:bg-blue-700': isMe,
+              'rounded-l-md bg-gray-200 dark:bg-slate-800': !isMe,
               'rounded-tl-2xl': isFirst && !isMe,
               'rounded-bl-2xl': isLast && !isMe,
               'rounded-tr-2xl': isFirst && isMe,
@@ -91,7 +91,7 @@ function BaseMessage({
           {children}
 
           {groupedActions && (
-            <div className='absolute right-2 -bottom-5 select-none rounded-2xl bg-white px-2 py-0.5 shadow'>
+            <div className='absolute right-2 -bottom-5 select-none rounded-2xl bg-white px-2 py-0.5 shadow dark:bg-slate-800'>
               {Object.entries(groupedActions).map(([reaction, actors]) => (
                 <ReactionButton
                   key={reaction}

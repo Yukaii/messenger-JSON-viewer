@@ -1,13 +1,16 @@
 import {
   InformationCircleIcon,
+  MoonIcon,
   RefreshIcon,
   SearchIcon,
+  SunIcon,
 } from '@heroicons/react/outline';
 import cx from 'classnames';
 import randomColor from 'randomcolor';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 
+import useTheme from '@/lib/hooks/useTheme';
 import useToggle from '@/lib/hooks/useToggle';
 import { findInboxFolder } from '@/lib/utils/file';
 import {
@@ -55,6 +58,8 @@ export default function HomePage() {
   const groupedMessages = useGroupedMessages(currentMessage);
   const chatStatistic = useChatStatistics(currentMessage);
 
+  const { dark, toggleTheme, theme } = useTheme();
+
   const { data } = useSWR('chats', () => loadChats(inboxDir));
   const { data: myName = null } = useSWR(
     () => (directory ? 'myName' : false),
@@ -96,29 +101,38 @@ export default function HomePage() {
       <div className='flex h-full'>
         {/* Sidebar */}
         <div
-          className='flex h-full max-h-full w-full flex-col border-r border-solid'
+          className='flex h-full max-h-full w-full flex-col border-r border-solid dark:border-gray-600'
           style={{ maxWidth: 350 }}
         >
-          <div className='flex flex-col items-start justify-center border-b border-solid px-4 py-4'>
+          <div className='flex flex-col items-start justify-center border-b border-solid px-4 py-4 dark:border-gray-600'>
             <div className='mb-4 flex w-full items-center justify-between'>
               <h3 className='select-none text-lg font-semibold'>
                 {myName}&#39;s chat history
               </h3>
 
-              <button className='rounded-full border-none p-2 hover:bg-gray-100'>
-                <RefreshIcon width={18} />
-              </button>
+              <div className='flex gap-2'>
+                <button
+                  className='rounded-full border-none p-2 hover:bg-gray-100 hover:dark:bg-gray-600'
+                  onClick={toggleTheme}
+                >
+                  {dark ? <MoonIcon width={18} /> : <SunIcon width={18} />}
+                </button>
+
+                <button className='rounded-full border-none p-2 hover:bg-gray-100 hover:dark:bg-gray-600'>
+                  <RefreshIcon width={18} />
+                </button>
+              </div>
             </div>
 
             <label className='relative w-full flex-1'>
               <input
                 placeholder='Search for user...'
-                className='w-full rounded-lg border-none bg-gray-100 py-2 px-4 pl-8 text-sm text-gray-500 outline-none ring-1 ring-gray-100 focus:ring-2 focus:ring-blue-200'
+                className='w-full select-none rounded-lg border-none bg-gray-100 py-2 px-4 pl-8 text-sm text-gray-500 outline-none ring-1 ring-gray-100 focus:ring-2 focus:ring-blue-200 dark:bg-slate-600 dark:text-white dark:ring-gray-500 dark:placeholder:text-gray-400 dark:focus:ring-blue-300'
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <SearchIcon
-                className='absolute top-0 left-2.5 h-full stroke-gray-500'
+                className='absolute top-0 left-2.5 h-full stroke-gray-500 dark:stroke-gray-400'
                 width={16}
                 height={16}
               />
@@ -133,9 +147,10 @@ export default function HomePage() {
               >
                 <div
                   className={cx(
-                    'flex flex-col rounded-lg py-3 px-5 hover:bg-gray-100',
+                    'flex flex-col rounded-lg py-3 px-5 hover:bg-gray-100 hover:dark:bg-gray-600',
                     {
-                      'bg-gray-100': folderName === chat.dirName,
+                      'bg-gray-100 dark:bg-gray-600':
+                        folderName === chat.dirName,
                     }
                   )}
                   onClick={() => {
@@ -156,7 +171,7 @@ export default function HomePage() {
 
         {/* Message boxes */}
         <div className='flex flex-1 flex-col'>
-          <div className='flex w-full items-center justify-between border-b py-4 px-4'>
+          <div className='flex w-full items-center justify-between border-b py-4 px-4 dark:border-gray-600'>
             <h3 className='select-none text-lg font-semibold'>
               {currentMessage
                 ? decodeString(currentMessage.title)
@@ -164,7 +179,7 @@ export default function HomePage() {
             </h3>
 
             <button
-              className='rounded-full border-none p-2 hover:bg-gray-100'
+              className='rounded-full border-none p-2 hover:bg-gray-100 hover:dark:bg-gray-600'
               onClick={toggleInfoPanel}
             >
               <InformationCircleIcon width={18} />
@@ -176,6 +191,7 @@ export default function HomePage() {
               const sectionSenderName = decodeString(messages[0].sender_name);
               const color = randomColor({
                 seed: sectionSenderName,
+                luminosity: theme,
               });
               const isMe = sectionSenderName === myName;
 
@@ -236,7 +252,7 @@ export default function HomePage() {
         {/* Info Panel */}
         {infoPanelOpen && currentMessage && (
           <div
-            className='flex h-full w-full flex-col overflow-y-auto border-l py-4 px-4'
+            className='flex h-full w-full flex-col overflow-y-auto border-l py-4 px-4 dark:border-gray-600'
             style={{ maxWidth: 350 }}
           >
             <h3 className='mb-4 select-none text-center text-lg font-semibold'>
@@ -252,6 +268,7 @@ export default function HomePage() {
               {currentMessage.participants.map((part) => {
                 const color = randomColor({
                   seed: part.name,
+                  luminosity: theme,
                 });
 
                 return (
