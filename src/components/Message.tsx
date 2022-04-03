@@ -1,8 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import cx from 'classnames';
+import { Popover } from 'react-tiny-popover';
 import { SRLWrapper } from 'simple-react-lightbox';
 import useSWR from 'swr';
 
+import useToggle from '@/lib/hooks/useToggle';
 import { getFileHandleRecursively } from '@/lib/utils/file';
 import { decodeString } from '@/lib/utils/message';
 
@@ -14,36 +16,55 @@ function BaseMessage({
   isLast,
   isMe,
   className,
+  message,
 }: {
+  message: Message;
   children?: React.ReactNode;
   isFirst: boolean;
   isLast: boolean;
   isMe: boolean;
   className?: string;
 }) {
+  const [isPopoverOpen, setPopoverOpen, togglePopover] = useToggle(false);
+
   return (
-    <div
-      className={cx('flex', {
-        'justify-end': isMe,
-      })}
+    <Popover
+      isOpen={isPopoverOpen}
+      positions={['left']}
+      padding={10}
+      content={() => (
+        <div className='rounded bg-slate-600 py-0.5 px-1 text-white opacity-70'>
+          {new Date(message.timestamp_ms).toLocaleString()}
+        </div>
+      )}
+      onClickOutside={() => setPopoverOpen(false)}
     >
       <div
-        className={cx(
-          'whitespace-pre-wrap rounded-2xl px-4 py-2',
-          {
-            'rounded-r-md bg-blue-400 text-white': isMe,
-            'rounded-l-md bg-gray-200': !isMe,
-            'rounded-tl-2xl': isFirst && !isMe,
-            'rounded-bl-2xl': isLast && !isMe,
-            'rounded-tr-2xl': isFirst && isMe,
-            'rounded-br-2xl': isLast && isMe,
-          },
-          className
-        )}
+        className={cx('flex', {
+          'justify-end': isMe,
+        })}
       >
-        {children}
+        <div
+          className={cx(
+            'whitespace-pre-wrap rounded-2xl px-4 py-2',
+            {
+              'rounded-r-md bg-blue-400 text-white': isMe,
+              'rounded-l-md bg-gray-200': !isMe,
+              'rounded-tl-2xl': isFirst && !isMe,
+              'rounded-bl-2xl': isLast && !isMe,
+              'rounded-tr-2xl': isFirst && isMe,
+              'rounded-br-2xl': isLast && isMe,
+            },
+            className
+          )}
+          onClick={() => {
+            togglePopover();
+          }}
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </Popover>
   );
 }
 
@@ -89,7 +110,12 @@ export default function MessageComponent({
   );
 
   const renderDefault = () => (
-    <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
+    <BaseMessage
+      isFirst={isFirst}
+      isLast={isLast}
+      isMe={isMe}
+      message={message}
+    >
       {content}
     </BaseMessage>
   );
@@ -100,6 +126,7 @@ export default function MessageComponent({
       isLast={isLast}
       isMe={isMe}
       className='bg-red-500 text-white'
+      message={message}
     >
       Not implemented
       <pre className='mt-3 whitespace-pre-wrap text-xs'>
@@ -113,7 +140,12 @@ export default function MessageComponent({
       if (message.photos) {
         return (
           <SRLWrapper>
-            <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
+            <BaseMessage
+              isFirst={isFirst}
+              isLast={isLast}
+              isMe={isMe}
+              message={message}
+            >
               {imageURIs
                 ? imageURIs.map((uri) => (
                     <a href={uri} key={uri}>
@@ -133,7 +165,12 @@ export default function MessageComponent({
     case MessageType.Share: {
       if (message.share?.link) {
         return (
-          <BaseMessage isFirst={isFirst} isLast={isLast} isMe={isMe}>
+          <BaseMessage
+            isFirst={isFirst}
+            isLast={isLast}
+            isMe={isMe}
+            message={message}
+          >
             <a
               href={message.share.link}
               target='_blank'
