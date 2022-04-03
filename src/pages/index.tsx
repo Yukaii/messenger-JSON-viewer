@@ -277,7 +277,15 @@ export default function HomePage() {
                 onToggle={toggleChatInfo}
               >
                 <div className='flex justify-between'>
-                  <span className='text-base font-medium'>Members count</span>
+                  <span className='text-base font-medium'>Messages Count</span>
+
+                  <span className='text-right text-base text-gray-500'>
+                    {currentMessage.messages.length}
+                  </span>
+                </div>
+
+                <div className='flex justify-between'>
+                  <span className='text-base font-medium'>Members Count</span>
 
                   <span className='text-base text-gray-500'>
                     {currentMessage.participants.length}
