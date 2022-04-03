@@ -94,6 +94,20 @@ export default function MessageComponent({
     </BaseMessage>
   );
 
+  const renderNotImplemented = () => (
+    <BaseMessage
+      isFirst={isFirst}
+      isLast={isLast}
+      isMe={isMe}
+      className='bg-red-500 text-white'
+    >
+      Not implemented
+      <pre className='mt-3 whitespace-pre-wrap text-xs'>
+        <code>{JSON.stringify(message)}</code>
+      </pre>
+    </BaseMessage>
+  );
+
   switch (message.type) {
     case MessageType.Generic: {
       if (message.photos) {
@@ -135,18 +149,6 @@ export default function MessageComponent({
       }
     }
     default:
-      return (
-        <BaseMessage
-          isFirst={isFirst}
-          isLast={isLast}
-          isMe={isMe}
-          className='bg-red-500 text-white'
-        >
-          Not implemented
-          <pre className='mt-3 whitespace-pre-wrap text-xs'>
-            <code>{JSON.stringify(message)}</code>
-          </pre>
-        </BaseMessage>
-      );
+      return renderNotImplemented();
   }
 }

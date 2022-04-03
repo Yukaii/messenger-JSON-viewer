@@ -4,6 +4,7 @@ export type Chat = {
   lastSent: number;
   title: string;
 };
+
 export enum MessageType {
   Generic = 'Generic',
   Unsubscribe = 'Unsubscribe',
@@ -11,6 +12,7 @@ export enum MessageType {
   Call = 'Call',
   Share = 'Share',
 }
+
 export type Message = (
   | {
       type: MessageType.Unsubscribe | MessageType.Unsubscribe;
@@ -41,6 +43,7 @@ export type Message = (
   content: string;
   is_unsent: boolean;
 };
+
 export type MessageData = {
   messages: Message[];
   participants: {
