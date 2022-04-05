@@ -1,6 +1,20 @@
-# Facebook(Meta) Messenger exported messages viewer
+# Facebook Messenger exported JSON viewer
 
-## Instruction
+<figure align="center">
+  <img src="./public/ios/180.png" alt="Messenger Viewer" width="200" height="200">
+  <figcaption><small>Icon is made with <a href="https://heroicons.com/">Heroicons</a></small></figcaption>
+</figure>
+
+## What's this?
+
+This is a simple tool to view Facebook Messenger exported JSON files. I made the UI into a Messenger clone, just for fun and to see what Tailwind CSS can do. Another reason is that I want to try out the [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API), knowing that it can be used to access the file in a folder just in the browser.
+
+### Technical Stack
+
+- Next.JS + TailwindCSS
+- [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API)
+
+## How to use
 
 1. Open [the Tool](https://messenger-offline-viewer.vercel.app/)
 2. Click the Button and select the folder you [downloaded from Meta](https://www.remote.tools/remote-work/download-facebook-messenger-conversation).
@@ -26,17 +40,17 @@
 - [x] Image type message
 - [x] Link
 - [x] Reactions
-- [ ] Subscribe/Unsubscribe message
-- [ ] Attachments
 - [x] Stickers
-- [ ] Calendar
+- [ ] Subscribe/Unsubscribe events
+- [ ] Attachments
+- [ ] Photos View
+- [ ] Calendar to jump to specific date
 - Date
   - [x] Sent at for each message
-  - [ ] Date separator
+  - [ ] Date/Time separator
 - Info Panel
   - Statistic
     - [x] message count (from both side)
-  - [ ] Photos View
   
 ## Previous works
 
