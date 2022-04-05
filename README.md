@@ -1,10 +1,7 @@
 # Facebook Messenger exported JSON viewer
 
 <p align="center">
-  <figure>
-    <img src="./public/ios/180.png" alt="Messenger Viewer" width="200" height="200">
-    <figcaption><small>Icon is made with <a href="https://heroicons.com/">Heroicons</a></small></figcaption>
-  </figure>
+  <img src="./public/ios/180.png" alt="Messenger Viewer" width="200" height="200">
 </p>
 
 ![messenger-viewer](./docs/images/messenger-viewer.png)
@@ -59,6 +56,10 @@ This is a simple tool to view Facebook Messenger exported JSON files. I made the
 ## Previous works
 
 - <https://github.com/simonwongwong/Facebook-Messenger-JSON-viewer>
+
+## Credits
+
+The application icon is modified from <a href="https://heroicons.com/">Heroicons</a>.
 
 ## 其它
 
