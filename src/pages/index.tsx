@@ -56,8 +56,8 @@ function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
           className='underline'
         >
           Download Your Information
-        </a>
-        Page.
+        </a>{' '}
+        page.
       </h2>
     </div>,
     <div
