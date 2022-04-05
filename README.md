@@ -32,11 +32,13 @@ This is a simple tool to view Facebook Messenger exported JSON files. I made the
 
 ![statistic](./docs/images/statistic.png)
 
-### Choose chatroom just as what you can do on Messenger
+### View chatroom just as what you can do on Messenger
 
-![offline-viewer](./docs/images/offline-viewer.png)
+![offline-viewer](./docs/images/messenger-viewer-white.png)
 
 ## TODOs
+
+If they should be done, then they will be done.
 
 - [x] Image type message
 - [x] Link
