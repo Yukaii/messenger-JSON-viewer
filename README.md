@@ -20,7 +20,7 @@ This is a simple tool to view Facebook Messenger exported JSON files. I made the
 
 ## How to use
 
-1. Open [the Tool](https://messenger-offline-viewer.vercel.app/)
+1. Open [the Tool](https://messenger-json-viewer.vercel.app/)
 2. Click the Button and select the folder you [downloaded from Meta](https://www.remote.tools/remote-work/download-facebook-messenger-conversation).
    ![start-screen](./docs/images/start.png)
    > The contents of the folder should look like this
