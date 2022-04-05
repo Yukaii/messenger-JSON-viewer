@@ -6,7 +6,6 @@ import {
   SunIcon,
 } from '@heroicons/react/outline';
 import cx from 'classnames';
-import Head from 'next/head';
 import randomColor from 'randomcolor';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -143,22 +142,10 @@ export default function HomePage() {
   };
 
   if (!data || data.length === 0) {
-    return (
-      <>
-        <Head>
-          <title>Messenger Archive Viewer</title>
-          <meta name='theme-color' content={dark ? '#121212' : '#ffffff'} />
-        </Head>
-        <StartScreen openDirPicker={openDirPicker} />
-      </>
-    );
+    return <StartScreen openDirPicker={openDirPicker} />;
   } else {
     return (
       <div className='flex h-full'>
-        <Head>
-          <title>Messenger Archive Viewer</title>
-          <meta name='theme-color' content={dark ? '#121212' : '#ffffff'} />
-        </Head>
         {/* Sidebar */}
         <div
           className='flex h-full max-h-full w-full flex-col border-r border-solid dark:border-gray-600'

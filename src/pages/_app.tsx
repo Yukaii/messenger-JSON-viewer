@@ -40,6 +40,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           />
           <meta name='msapplication-TileColor' content='#2B5797' />
           <meta name='msapplication-tap-highlight' content='no' />
+
+          <title>Messenger Archive Viewer</title>
+          <meta name='theme-color' content='#121212' />
         </Head>
 
         <Component {...pageProps}></Component>
