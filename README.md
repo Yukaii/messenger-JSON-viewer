@@ -1,9 +1,11 @@
 # Facebook Messenger exported JSON viewer
 
-<figure align="center">
-  <img src="./public/ios/180.png" alt="Messenger Viewer" width="200" height="200">
-  <figcaption><small>Icon is made with <a href="https://heroicons.com/">Heroicons</a></small></figcaption>
-</figure>
+<p align="center">
+  <figure>
+    <img src="./public/ios/180.png" alt="Messenger Viewer" width="200" height="200">
+    <figcaption><small>Icon is made with <a href="https://heroicons.com/">Heroicons</a></small></figcaption>
+  </figure>
+</p>
 
 ![messenger-viewer](./docs/images/messenger-viewer.png)
 
