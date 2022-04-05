@@ -5,6 +5,8 @@
   <figcaption><small>Icon is made with <a href="https://heroicons.com/">Heroicons</a></small></figcaption>
 </figure>
 
+![messenger-viewer](./docs/images/messenger-viewer.png)
+
 ## What's this?
 
 This is a simple tool to view Facebook Messenger exported JSON files. I made the UI into a Messenger clone, just for fun and to see what Tailwind CSS can do. Another reason is that I want to try out the [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API), knowing that it can be used to access the file in a folder just in the browser.
@@ -23,7 +25,7 @@ This is a simple tool to view Facebook Messenger exported JSON files. I made the
    > ![folder](./docs/images/folder.png)
 3. Wait a few seconds, sometimes it takes one minute to load.
 4. Tada!
-   ![offline-viewer](./docs/images/offline-viewer.png)
+   ![offline-viewer](./docs/images/messenger-viewer-white.png)
 
 ## Features
 

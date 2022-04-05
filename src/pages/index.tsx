@@ -34,7 +34,7 @@ function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
     >
       <img src='/ios/100.png' alt='logo' width={100} height={100} />
       <h1 className='text-center text-2xl font-bold'>
-        Welcome to Messenger Offline Viewer
+        Welcome to Facebook Messenger exported JSON viewer
       </h1>
       <p className='mt-5'>Click next to continue</p>
     </div>,
@@ -49,9 +49,15 @@ function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
       />
       <h2 className='text-center text-xl font-bold'>
         Step 1: Export the messenger data as JSON from Facebook. Go to{' '}
-        <a href='https://www.facebook.com/dyi' target='_blank' rel='noreferrer'>
+        <a
+          href='https://www.facebook.com/dyi'
+          target='_blank'
+          rel='noreferrer'
+          className='underline'
+        >
           Download Your Information
         </a>
+        Page.
       </h2>
     </div>,
     <div

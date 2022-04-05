@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
           <meta
             name='application-name'
-            content='Offline Viewer for Facebook Messenger'
+            content='Facebook Messenger exported JSON viewer'
           />
           <meta name='apple-mobile-web-app-capable' content='yes' />
           <meta
@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           />
           <meta
             name='apple-mobile-web-app-title'
-            content='Offline Viewer for Facebook Messenger'
+            content='Facebook Messenger exported JSON viewer'
           />
           <meta
             name='description'

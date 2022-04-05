@@ -563,10 +563,10 @@
       "type": "image/png"
     }
   ],
-  "name": "Offline Viewer for Facebook Messenger",
+  "name": "Facebook Messenger exported JSON viewer",
   "orientation": "portrait",
   "scope": "/",
-  "short_name": "FB Messenger Offline View",
+  "short_name": "FB Messenger JSON Viewer",
   "splash_pages": null,
   "start_url": "/",
   "theme_color": "#ffffff"
