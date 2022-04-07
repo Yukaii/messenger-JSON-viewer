@@ -1,6 +1,7 @@
 {
   "background_color": "#004740",
   "display": "fullscreen",
+  "display_override": ["window-controls-overlay"],
   "icons": [
     {
       "sizes": "71x71",
@@ -568,5 +569,6 @@
   "scope": "/",
   "short_name": "FB Messenger JSON Viewer",
   "splash_pages": null,
-  "start_url": "/"
+  "start_url": "/",
+  "theme_color": "#121212"
 }

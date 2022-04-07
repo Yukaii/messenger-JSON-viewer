@@ -2,7 +2,6 @@ import {
   InformationCircleIcon,
   MoonIcon,
   RefreshIcon,
-  SearchIcon,
   SunIcon,
 } from '@heroicons/react/outline';
 import cx from 'classnames';
@@ -13,6 +12,7 @@ import useSWR from 'swr';
 import useTheme from '@/lib/hooks/useTheme';
 import useThemeColor from '@/lib/hooks/useThemeColor';
 import useToggle from '@/lib/hooks/useToggle';
+import useWindowOverlay from '@/lib/hooks/useWindowOverlay';
 import { findInboxFolder } from '@/lib/utils/file';
 import {
   decodeString,
@@ -26,6 +26,7 @@ import {
 import Collapsible from '@/components/Collapsible';
 import MessageComponent from '@/components/Message';
 import OnboardingCarousel from '@/components/OnboardingCarousel';
+import SearchInput from '@/components/SearchInput';
 
 function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
   const contents = [
@@ -108,6 +109,8 @@ export default function HomePage() {
   const currentMessage = useCurrentMessage(folderName);
   const groupedMessages = useGroupedMessages(currentMessage);
   const chatStatistic = useChatStatistics(currentMessage);
+  const { windowControlsOverlayEnable, windowControlsOverlayRect } =
+    useWindowOverlay();
 
   const { dark, toggleTheme, theme } = useTheme();
   useThemeColor({
@@ -156,14 +159,44 @@ export default function HomePage() {
     return <StartScreen openDirPicker={openDirPicker} />;
   } else {
     return (
-      <div className='flex h-full'>
+      <div
+        className='flex h-full'
+        style={{
+          paddingTop: windowControlsOverlayRect?.height ?? 0,
+        }}
+      >
+        {windowControlsOverlayEnable && (
+          <div
+            className='fixed z-50 flex items-center'
+            style={{
+              width: windowControlsOverlayRect?.width || 0,
+              height: windowControlsOverlayRect?.height || 0,
+              top: windowControlsOverlayRect?.top || 0,
+              left: windowControlsOverlayRect?.left || 0,
+              WebkitAppRegion: 'drag',
+            }}
+          >
+            <div className='px-4' style={{ maxWidth: 300 }}>
+              <SearchInput
+                className='rounded-sm py-0.5 px-4'
+                style={{
+                  WebkitAppRegion: 'no-drag',
+                }}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder='Search for user...'
+              />
+            </div>
+          </div>
+        )}
+
         {/* Sidebar */}
         <div
           className='flex h-full max-h-full w-full flex-col border-r border-solid dark:border-gray-600'
           style={{ maxWidth: 350 }}
         >
           <div className='flex flex-col items-start justify-center border-b border-solid px-4 py-4 dark:border-gray-600'>
-            <div className='mb-4 flex w-full items-center justify-between'>
+            <div className='flex w-full items-center justify-between'>
               <h3 className='select-none text-lg font-semibold'>
                 {myName}&#39;s chat history
               </h3>
@@ -191,19 +224,14 @@ export default function HomePage() {
               </div>
             </div>
 
-            <label className='relative w-full flex-1'>
-              <input
-                placeholder='Search for user...'
-                className='w-full select-none rounded-lg border-none bg-gray-100 py-2 px-4 pl-8 text-sm text-gray-500 outline-none ring-1 ring-gray-100 focus:ring-2 focus:ring-blue-200 dark:bg-slate-600 dark:text-white dark:ring-gray-500 dark:placeholder:text-gray-400 dark:focus:ring-blue-300'
+            {!windowControlsOverlayEnable && (
+              <SearchInput
+                className='mt-4 rounded-lg py-2 px-4'
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                placeholder='Search for user...'
               />
-              <SearchIcon
-                className='absolute top-0 left-2.5 h-full stroke-gray-500 dark:stroke-gray-400'
-                width={16}
-                height={16}
-              />
-            </label>
+            )}
           </div>
 
           {chats.length > 0 && (
