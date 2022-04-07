@@ -38,7 +38,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             name='msapplication-config'
             content='/icons/browserconfig.xml'
           />
-          <meta name='msapplication-TileColor' content='#2B5797' />
+          <meta name='msapplication-TileColor' content='#121212' />
           <meta name='msapplication-tap-highlight' content='no' />
 
           <title>Messenger Archive Viewer</title>

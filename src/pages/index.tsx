@@ -11,6 +11,7 @@ import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 import useTheme from '@/lib/hooks/useTheme';
+import useThemeColor from '@/lib/hooks/useThemeColor';
 import useToggle from '@/lib/hooks/useToggle';
 import { findInboxFolder } from '@/lib/utils/file';
 import {
@@ -109,6 +110,10 @@ export default function HomePage() {
   const chatStatistic = useChatStatistics(currentMessage);
 
   const { dark, toggleTheme, theme } = useTheme();
+  useThemeColor({
+    dark: '#121212',
+    light: '#ffffff',
+  });
 
   const { data } = useSWR(
     () => inboxDir?.name && ['chats', inboxDir?.name],

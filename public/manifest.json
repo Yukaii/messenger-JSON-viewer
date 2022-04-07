@@ -568,6 +568,5 @@
   "scope": "/",
   "short_name": "FB Messenger JSON Viewer",
   "splash_pages": null,
-  "start_url": "/",
-  "theme_color": "#ffffff"
+  "start_url": "/"
 }
