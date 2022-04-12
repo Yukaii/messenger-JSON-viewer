@@ -6,8 +6,8 @@ import {
 } from '@heroicons/react/outline';
 import cx from 'classnames';
 import randomColor from 'randomcolor';
-import { useMemo, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import useSWR from 'swr';
 
 import useTheme from '@/lib/hooks/useTheme';
@@ -93,6 +93,8 @@ function StartScreen({ openDirPicker }: { openDirPicker: () => void }) {
   );
 }
 
+const scrollPositionStore = new Map();
+
 export default function HomePage() {
   const [directory, setDirectory] = useState<FileSystemDirectoryHandle | null>(
     null
@@ -112,6 +114,18 @@ export default function HomePage() {
   const chatStatistic = useChatStatistics(currentMessage);
   const { windowControlsOverlayEnable, windowControlsOverlayRect } =
     useWindowOverlay();
+  const messageGroupRef = useRef<VirtuosoHandle>(null);
+
+  useEffect(() => {
+    const position = scrollPositionStore.get(folderName!);
+
+    const targetIndex = position || groupedMessages.length - 1;
+
+    messageGroupRef.current?.scrollToIndex({
+      index: targetIndex,
+      align: 'end',
+    });
+  }, [folderName, groupedMessages]);
 
   const { dark, toggleTheme, theme } = useTheme();
   useThemeColor({
@@ -318,8 +332,19 @@ export default function HomePage() {
             </button>
           </div>
 
-          <div className='flex flex-1 flex-col gap-5 overflow-y-auto break-all px-4 py-4'>
-            {groupedMessages.map((messages, groupIdx) => {
+          <Virtuoso
+            className='flex w-full flex-1 flex-col gap-5 overflow-hidden overflow-y-auto break-all'
+            ref={messageGroupRef}
+            totalCount={groupedMessages.length}
+            atBottomThreshold={40}
+            rangeChanged={(range) => {
+              if (range.endIndex && range.startIndex) {
+                scrollPositionStore.set(folderName!, range.endIndex);
+              }
+            }}
+            itemContent={(groupIdx) => {
+              const messages = groupedMessages[groupIdx];
+
               const sectionSenderName = decodeString(messages[0].sender_name);
               const color = randomColor({
                 seed: sectionSenderName,
@@ -329,8 +354,10 @@ export default function HomePage() {
 
               return (
                 <div
-                  className={cx('flex gap-2', {
+                  className={cx('flex gap-2 px-4', {
                     'flex-row-reverse': isMe,
+                    'pt-4': groupIdx === 0,
+                    'pb-4': groupIdx === groupedMessages.length - 1,
                   })}
                   key={groupIdx}
                 >
@@ -377,8 +404,8 @@ export default function HomePage() {
                   </div>
                 </div>
               );
-            })}
-          </div>
+            }}
+          />
         </div>
 
         {/* Info Panel */}
