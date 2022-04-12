@@ -214,7 +214,14 @@ export default function HomePage() {
           className='flex h-full max-h-full w-full flex-col border-r border-solid dark:border-gray-600'
           style={{ maxWidth: 350 }}
         >
-          <div className='flex flex-col items-start justify-center border-b border-solid px-4 py-4 dark:border-gray-600'>
+          <div
+            className={cx(
+              'flex flex-col items-start justify-center border-b border-solid px-4 py-4 dark:border-gray-600',
+              {
+                'border-t': windowControlsOverlayEnable,
+              }
+            )}
+          >
             <div className='flex w-full items-center justify-between'>
               <h3 className='select-none text-lg font-semibold'>
                 {myName}&#39;s chat history
@@ -321,7 +328,14 @@ export default function HomePage() {
 
         {/* Message boxes */}
         <div className='flex flex-1 flex-col'>
-          <div className='flex w-full items-center justify-between border-b py-4 px-4 dark:border-gray-600'>
+          <div
+            className={cx(
+              'flex w-full items-center justify-between border-b py-4 px-4 dark:border-gray-600',
+              {
+                'border-t': windowControlsOverlayEnable,
+              }
+            )}
+          >
             <h3 className='select-none text-lg font-semibold'>
               {currentMessage
                 ? decodeString(currentMessage.title)
@@ -415,7 +429,12 @@ export default function HomePage() {
         {/* Info Panel */}
         {infoPanelOpen && currentMessage && (
           <div
-            className='flex h-full w-full flex-col overflow-y-auto border-l py-4 px-4 dark:border-gray-600'
+            className={cx(
+              'flex h-full w-full flex-col overflow-y-auto border-l py-4 px-4 dark:border-gray-600',
+              {
+                'border-t': windowControlsOverlayEnable,
+              }
+            )}
             style={{ maxWidth: 350 }}
           >
             <h3 className='mb-4 select-none text-center text-lg font-semibold'>
