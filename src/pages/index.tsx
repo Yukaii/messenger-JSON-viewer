@@ -7,6 +7,7 @@ import {
 import cx from 'classnames';
 import randomColor from 'randomcolor';
 import { useMemo, useState } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 import useSWR from 'swr';
 
 import useTheme from '@/lib/hooks/useTheme';
@@ -225,60 +226,70 @@ export default function HomePage() {
             </div>
 
             {!windowControlsOverlayEnable && (
-              <SearchInput
-                className='mt-4 rounded-lg py-2 px-4'
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder='Search for user...'
-              />
+              <>
+                <div className='block h-4 w-full' />
+
+                <SearchInput
+                  className='rounded-lg py-2 px-4'
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder='Search for user...'
+                />
+              </>
             )}
           </div>
 
           {chats.length > 0 && (
-            <div className='overflow-y-auto overflow-x-hidden'>
-              {chats.map((chat) => (
-                <div
-                  className='max-w-full cursor-default px-1 py-1.5'
-                  key={chat.dirName}
-                >
+            <Virtuoso
+              className='h-full overflow-y-auto overflow-x-hidden'
+              totalCount={chats.length}
+              atBottomThreshold={20}
+              itemContent={(index) => {
+                const chat = chats[index];
+                return (
                   <div
-                    className={cx(
-                      'flex items-center gap-2 rounded-lg py-3 px-5 hover:bg-gray-100 hover:dark:bg-gray-600',
-                      {
-                        'bg-gray-100 dark:bg-gray-600':
-                          folderName === chat.dirName,
-                      }
-                    )}
-                    onClick={() => {
-                      setFolderName(chat.dirName);
-                    }}
+                    className='max-w-full cursor-default px-1 py-1.5'
+                    key={chat.dirName}
                   >
                     <div
-                      className='flex h-9 w-9 select-none items-center justify-center rounded-full text-xl text-white'
-                      style={{
-                        minWidth: '2.25rem',
-                        minHeight: '2.25rem',
-                        backgroundColor: randomColor({
-                          luminosity: 'dark',
-                          seed: chat.dirName,
-                        }),
+                      className={cx(
+                        'flex items-center gap-2 rounded-lg py-3 px-5 hover:bg-gray-100 hover:dark:bg-gray-600',
+                        {
+                          'bg-gray-100 dark:bg-gray-600':
+                            folderName === chat.dirName,
+                        }
+                      )}
+                      onClick={() => {
+                        setFolderName(chat.dirName);
                       }}
                     >
-                      {chat.title[0]}
-                    </div>
+                      <div
+                        className='flex h-9 w-9 select-none items-center justify-center rounded-full text-xl text-white'
+                        style={{
+                          minWidth: '2.25rem',
+                          minHeight: '2.25rem',
+                          backgroundColor: randomColor({
+                            luminosity: 'dark',
+                            seed: chat.dirName,
+                          }),
+                        }}
+                      >
+                        {chat.title[0]}
+                      </div>
 
-                    <div className='flex max-w-full flex-col'>
-                      <span className='mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap'>
-                        {chat.title}
-                      </span>
-                      <small className='max-w-full overflow-hidden text-ellipsis text-gray-400'>
-                        {chat.dirName}
-                      </small>
+                      <div className='flex max-w-full flex-col'>
+                        <span className='mb-1 max-w-full overflow-hidden text-ellipsis whitespace-nowrap'>
+                          {chat.title}
+                        </span>
+                        <small className='max-w-full overflow-hidden text-ellipsis text-gray-400'>
+                          {chat.dirName}
+                        </small>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                );
+              }}
+            />
           )}
 
           {chats.length === 0 && (
