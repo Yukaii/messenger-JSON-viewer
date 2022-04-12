@@ -183,20 +183,24 @@ export default function HomePage() {
         {windowControlsOverlayEnable && (
           <div
             className='fixed z-50 flex items-center'
-            style={{
-              width: windowControlsOverlayRect?.width || 0,
-              height: windowControlsOverlayRect?.height || 0,
-              top: windowControlsOverlayRect?.top || 0,
-              left: windowControlsOverlayRect?.left || 0,
-              WebkitAppRegion: 'drag',
-            }}
+            style={
+              {
+                width: windowControlsOverlayRect?.width || 0,
+                height: windowControlsOverlayRect?.height || 0,
+                top: windowControlsOverlayRect?.top || 0,
+                left: windowControlsOverlayRect?.left || 0,
+                WebkitAppRegion: 'drag',
+              } as any
+            }
           >
             <div className='px-4' style={{ maxWidth: 300 }}>
               <SearchInput
                 className='rounded-sm py-0.5 px-4'
-                style={{
-                  WebkitAppRegion: 'no-drag',
-                }}
+                style={
+                  {
+                    WebkitAppRegion: 'no-drag',
+                  } as any
+                }
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder='Search for user...'
