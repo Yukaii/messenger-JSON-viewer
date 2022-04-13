@@ -1,5 +1,5 @@
 import { SearchIcon } from '@heroicons/react/outline';
-import cx from 'classnames';
+import cx from 'clsx';
 import { InputHTMLAttributes } from 'react';
 
 export default function SearchInput(

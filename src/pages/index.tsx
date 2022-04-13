@@ -4,7 +4,7 @@ import {
   RefreshIcon,
   SunIcon,
 } from '@heroicons/react/outline';
-import cx from 'classnames';
+import cx from 'clsx';
 import randomColor from 'randomcolor';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';

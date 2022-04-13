@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
-import cx from 'classnames';
+import cx from 'clsx';
 import { useState } from 'react';
 
 export default function OnboardingCarousel({

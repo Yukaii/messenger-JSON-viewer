@@ -1,5 +1,5 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline';
-import cx from 'classnames';
+import cx from 'clsx';
 
 export default function Collapsible({
   isExpanded = false,

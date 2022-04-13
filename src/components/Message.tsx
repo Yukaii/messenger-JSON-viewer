@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import cx from 'classnames';
+import cx from 'clsx';
 import { Popover } from 'react-tiny-popover';
 import { SRLWrapper } from 'simple-react-lightbox';
 import useSWR from 'swr';
