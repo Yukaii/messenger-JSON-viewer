@@ -36,6 +36,10 @@ This is a simple tool to view Facebook Messenger exported JSON files. I made the
 
 ![offline-viewer](./docs/images/messenger-viewer-white.png)
 
+### Window Controls Overlay as PWA (actually not a feature :p)
+
+![wco](./docs/images/window-controls-overlay.png)
+
 ## TODOs
 
 If they should be done, then they will be done.
