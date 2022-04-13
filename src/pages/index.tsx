@@ -114,6 +114,14 @@ export default function HomePage() {
   const chatStatistic = useChatStatistics(currentMessage);
   const { windowControlsOverlayEnable, windowControlsOverlayRect } =
     useWindowOverlay();
+  const searchbarWidth = useMemo(() => {
+    if (windowControlsOverlayRect?.width) {
+      return windowControlsOverlayRect?.width * 0.6;
+    } else {
+      return 300;
+    }
+  }, [windowControlsOverlayRect]);
+
   const messageGroupRef = useRef<VirtuosoHandle>(null);
 
   useEffect(() => {
@@ -182,7 +190,7 @@ export default function HomePage() {
       >
         {windowControlsOverlayEnable && (
           <div
-            className='fixed z-50 flex items-center'
+            className='fixed z-50 flex items-center justify-center'
             style={
               {
                 width: windowControlsOverlayRect?.width || 0,
@@ -193,7 +201,7 @@ export default function HomePage() {
               } as any
             }
           >
-            <div className='px-4' style={{ maxWidth: 300 }}>
+            <div className='w-full px-4' style={{ maxWidth: searchbarWidth }}>
               <SearchInput
                 className='rounded-sm py-0.5 px-4'
                 style={
@@ -233,7 +241,7 @@ export default function HomePage() {
                   onClick={toggleTheme}
                   title='Toggle Theme'
                 >
-                  {dark ? <MoonIcon width={18} /> : <SunIcon width={18} />}
+                  {dark ? <SunIcon width={18} /> : <MoonIcon width={18} />}
                 </button>
 
                 <button
