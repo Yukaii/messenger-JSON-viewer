@@ -40,6 +40,31 @@ This is a simple tool to view Facebook Messenger exported JSON files. I made the
 
 ![wco](./docs/images/window-controls-overlay.png)
 
+## Development (Running locally)
+
+Before you start, make sure you have [Node.js](https://nodejs.org/) and [Yarn](https://yarnpkg.com/) installed.
+
+First, clone the repository:
+
+```bash
+git clone https://github.com/Yukaii/messenger-JSON-viewer.git
+```
+
+Then, install the dependencies:
+
+```bash
+cd messenger-JSON-viewer
+yarn install
+```
+
+Finally, run the development server:
+
+```bash
+yarn dev
+```
+
+The server should be running at http://localhost:3000.
+
 ## TODOs
 
 If they should be done, then they will be done.
